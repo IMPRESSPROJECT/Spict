@@ -54,7 +54,7 @@ omm8c9aNC <- data.frame(obsC = c(1130,799,641,751,890,565,224,206,355,298,1291,2
 omm8c9aND <- data.frame(obsD = c(5.72,1.56,1.2,2.6,2.9,3.82,0.96,1.26,2.34,2.14,1.6,5.34,3.58,2.14,4.34,5.64,23.7,6.38,12.74,8.38),timeD = c(2000:2019)+0.75)
 
 # Index data: Commercial index bottom trawlers (tonnes/fishing sequence)
-omm8c9aNI <- data.frame(obsI = c(4.05,13.26,18.76,42.76,45.65,34.07,17.98,50.92,32.06,23.37,10),timeI = 2009:2019)
+omm8c9aNI <- data.frame(obsI = c(4.05,13.26,18.76,42.76,45.65,34.07,17.98,50.92,32.06,23.37,10),timeI = c(2009:2019)+0.5)
 
 # Create a list for input data
 
@@ -123,14 +123,23 @@ all(is.finite(res_omm8c9aNDefault$sd))
 res_omm8c9aNDefault <- calc.osa.resid(res_omm8c9aNDefault)
 plotspict.diagnostic(res_omm8c9aNDefault)
 
-# Retrospective: no trends and all runs inside the confidence intervals
+# Retrospective: no trends and all runs inside the confidence intervals:
 ```
 
-Problems of convergence.
+All runs converged.
 
 ```{r message=FALSE, warning=FALSE}
-rep <- retro(res_omm8c9aNDefault, nretroyear=5)
+rep<-retro(res_omm8c9aNDefault, nretroyear=5)
+plotspict.retro(rep)
 
+# Checking robustness to initial parameter values
+```
+
+Not all runs converged. 
+
+```{r message=FALSE, warning=FALSE}
+set.seed(123)
+check.ini(omm8c9aN, ntrials=30)
 ```
 
 #### Run 2. 
@@ -169,25 +178,15 @@ all(is.finite(res_omm8c9aNSchaefer$sd))
 res_omm8c9aNSchaefer <- calc.osa.resid(res_omm8c9aNSchaefer)
 plotspict.diagnostic(res_omm8c9aNSchaefer)
 
-# Retrospective: no trends and all runs inside the confidence intervals:
+# Retrospective: no trends and all runs inside the confidence intervals
 ```
 
-All runs converged.
+Problems of convergence.
 
 ```{r message=FALSE, warning=FALSE}
-rep<-retro(res_omm8c9aNSchaefer, nretroyear=5)
-plotspict.retro(rep)
+rep <- retro(res_omm8c9aNSchaefer, nretroyear=5)
 
-# Checking robustness to initial parameter values
 ```
-
-Not all runs converged. 
-
-```{r message=FALSE, warning=FALSE}
-set.seed(123)
-check.ini(omm8c9aNSchaefer, ntrials=30)
-```
-
 
 #### Run 3. 
 
@@ -295,7 +294,7 @@ check.ini(omm8c9aNfns, ntrials=30)
 
 # Questions/doubts
 
-Run 2 and 4 converged but the model is sensitive to initial values and the confidence intervals are quite wide.
+All runs converged, although runs 2 and 3 failed in the retrospective pattern convergence. In runs 1 and 4, the model is sensitive to initial values and the confidence intervals are quite wide. 
 
 They are not target species and the commercial effort is not focused on them. Although in the last years, there have been some fishing trips targeting these species when abundance is high. 
 
